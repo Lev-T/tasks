@@ -1,6 +1,9 @@
 /**
  * @file: task/iface.h 
  * Interface of a programming task
+ * Doubly connected list
+ * by Lev Teplyakov
+ * for iLab Compiler Project
  */
 #include "../Utils/utils_iface.h"
 
@@ -20,8 +23,7 @@ using namespace Utils;
 /**
  * Namespace for the programming task
  */
-namespace Task
-{
+namespace Task {
     //
     // Doubly connected list
     //
@@ -33,17 +35,21 @@ namespace Task
         //
         class Unit
         {
+            friend DList;
+            
         public:
             // ---- This interface is part of the task ---
-            Unit *next(); // Get the next unit in list
-            Unit *prev(); // Get the previous unit in list
+            Unit();
+            ~Unit();
+            Unit* next(); // Get the next unit in list
+            Unit* prev(); // Get the previous unit in list
             T& val();     // Get the reference to the unit's value
-        private:
-        // ---- Implementation routines ----
-        
             
-        // ---- Data involved in the implementation ----    
-         
+        private:
+            // ---- Data involved in the implementation ----
+            T value;
+            Unit* nextElem;
+            Unit* prevElem;
         };
 
         // ---- Public interface of DList ----
@@ -68,7 +74,9 @@ private:
         // ---- The internal implementation routines ----
         
         // ---- The data involved in the implementation ----
-       
+        Unit* firstElem;
+        Unit* lastElem;
+        unsigned sizeValue;
     };
 
     bool uTest( UnitTest *utest_p);

@@ -67,3 +67,8 @@ namespace Task
         return utest_p->result();
     }
 };
+
+#include <stdio.h>
+int main(){
+    printf("lol");
+}
