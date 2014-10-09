@@ -5,9 +5,10 @@
  * by Lev Teplyakov
  * for iLab Compiler Project
  */
+/*==========
 #include "../Utils/utils_iface.h"
 
-/* namespaces import */
+// namespaces import 
 using namespace Utils;
 
 //Debug assert with diagnostic info
@@ -19,10 +20,15 @@ using namespace Utils;
 #if !defined(DLIST_ASSERTD)
 #    define DLIST_ASSERTD(cond) ASSERT_XD(cond, "DList", "")
 #endif
-
+==========*/
 /**
  * Namespace for the programming task
  */
+
+namespace Task {
+#include <stdio.h>
+}
+
 namespace Task {
     //
     // Doubly connected list
@@ -35,11 +41,12 @@ namespace Task {
         //
         class Unit
         {
-            friend DList;
+            friend DList; // we have to change Unit data from DList
             
         public:
             // ---- This interface is part of the task ---
-            Unit();
+            Unit(); // makes nextElem and prevElem zero and calls default
+                    // constructor for T
             ~Unit();
             Unit* next(); // Get the next unit in list
             Unit* prev(); // Get the previous unit in list
@@ -47,13 +54,13 @@ namespace Task {
             
         private:
             // ---- Data involved in the implementation ----
-            T value;
+            T* value;
             Unit* nextElem;
             Unit* prevElem;
         };
 
         // ---- Public interface of DList ----
-        DList(); //< Constructor
+        DList(); //< Constructor, makes empty Dlist, all data is zero
         ~DList();//< Destructor
         
         void push_front (const T& val);       // Insert one unit with given value at front        
@@ -62,24 +69,26 @@ namespace Task {
         void pop_back();                      // Remove one unit from the back of the list
         Unit* insert (Unit* u, const T& val); // Insert one unit before the given one  
 
-        Unit* first(); // Get first unit
-        Unit* last();  // Get last unit
+        Unit* first() const; // Get first unit
+        Unit* last() const;  // Get last unit
         
         Unit* erase (Unit* u); // Remove given unit from list, return next unit or null  
         void clear();          // Remove all units
         bool empty();          // Check if list is empty. Returns true if empty, false otherwise
-        unsigned size();       // Get the number of units in the list
+        unsigned size() const; // Get the number of units in the list
         void reverse();        // Reverse the order of units in the list
-private:
-        // ---- The internal implementation routines ----
         
+        // ---- function for debug ----
+        void intDump() const; // prints list to stdout as T is int (printf("%d",val) is used)
+        
+private:
         // ---- The data involved in the implementation ----
         Unit* firstElem;
         Unit* lastElem;
         unsigned sizeValue;
     };
 
-    bool uTest( UnitTest *utest_p);
+ //   bool uTest( UnitTest *utest_p);
 };
 
 // Since we have defined list as a template - we should implement the solution in a header

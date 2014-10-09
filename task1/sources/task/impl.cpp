@@ -1,4 +1,4 @@
-#include "iface.h"
+/*#include "iface.h"
 
 // Implementation of the task's unit testing
 namespace Task
@@ -67,8 +67,49 @@ namespace Task
         return utest_p->result();
     }
 };
-
+*/
 #include <stdio.h>
+#include "iface.h"
+typedef Task::DList<int> list;
+typedef list::Unit unit;
 int main(){
-    printf("lol");
+    list mylist;
+    mylist.push_front(5);
+    mylist.push_front(10);
+    mylist.push_back(13);
+    mylist.push_front(15);
+    mylist.intDump();
+    unit* elem = mylist.first();
+    mylist.insert(elem->next()->next(), 77);
+    mylist.intDump();
+    return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
