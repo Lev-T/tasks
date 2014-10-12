@@ -1,115 +1,83 @@
-/*#include "iface.h"
+#include <assert.h>
+#include "iface.h"
+#include <stdio.h>
 
-// Implementation of the task's unit testing
-namespace Task
-{
-    typedef DList<int> List;
-    typedef DList<int>::Unit Unit;
+int main(){
+    typedef Task::DList<int> List;
+    typedef List::Unit Unit;
+    
+    List list;
+    assert(list.size() == 0);
+    assert(list.first() == 0);
+    assert(list.first() == list.last());
+    
+    
+    list.push_front(3);
+    list.push_front(123);
+    assert(list.last()->val() == 3);
+    assert(list.first()->val() == 123);
+    assert(list.size() == 2);
+    assert(list.first()->prev() == 0);
+    assert(list.last()->next() == 0);
+    assert(!list.empty());
+    
+    list.clear();
+    assert(list.size() == 0);
+    assert(list.first() == 0);
+    assert(list.first() == list.last());
+    assert(list.empty());
+    
+    list.push_back(3);
+    list.push_back(123);
+    assert(list.first()->val() == 3);
+    assert(list.last()->val() == 123);
+    assert(list.size() == 2);
+    
+    list.pop_back();
+    assert(list.first() == list.last());
+    assert(list.first()->val() == 3);
+    
+    list.push_front(123);
+    list.pop_front();
+    assert(list.first() == list.last());
+    assert(list.first()->val() == 3);
+    
+    list.clear();
+    for (int i = 1; i < 11; i++) {
+        list.push_front(i);
+    }
+    Unit* unit = list.erase(list.first());
+    assert(unit->val() == 9);
+    assert(list.size() == 9);
 
-    bool uTest( UnitTest *utest_p)
-    {
-        DList<int> list;
-        list.push_back(5);
-        list.push_back(10);
-        Unit *u = list.first();
-        
-        UTEST_CHECK( utest_p, u);
-        UTEST_CHECK( utest_p, list.size() == 2);
-
-        int& f = u->val();
-        f = 15;
-        
-        int sum = 0;
-        for ( Unit* e = list.first (); e!= 0; e = e->next() )
-        {
-            sum += e->val();
-        }
-
-        UTEST_CHECK( utest_p, sum == 25);
-
-        u = list.first();
-
-        UTEST_CHECK( utest_p, u->next() == list.last() );
-        UTEST_CHECK( utest_p, u->val() == 15);
-
-        Unit * last = list.erase( u);
-
-        UTEST_CHECK( utest_p, last->next() == 0); 
-        UTEST_CHECK( utest_p, last->prev() == 0);
-        UTEST_CHECK( utest_p, last == list.first());
-        UTEST_CHECK( utest_p, last == list.last());
-        
-        // Test clear
-        list.clear();
-
-        UTEST_CHECK( utest_p, list.size() == 0);
-        UTEST_CHECK( utest_p, list.empty() );
-        UTEST_CHECK( utest_p, list.first() == 0);
-        UTEST_CHECK( utest_p, list.last() == 0);
-
-        //--- Test insert and reverse
-        list.push_front( 10);// list: 10
-        list.push_front( 20);// list: 20 10
-        list.push_front( 40);// list: 40 20 10
-        
-        u= list.first()->next();
-        list.insert( u, 30); // list: 40 30 20 10
-        
-        list.reverse(); // list: 10 20 30 40
-
-        UTEST_CHECK( utest_p, list.first()->val() == 10);
-        UTEST_CHECK( utest_p, list.first()->next()->val() == 20);
-        UTEST_CHECK( utest_p, list.first()->next()->next()->val() == 30);
-        
-        UTEST_CHECK( utest_p, list.last()->val() == 40);
+    unit = list.erase(list.last());
+    assert(unit == 0);
+    assert(list.size() == 8);
+    
+    unit = list.erase(list.first()->next()->next());
+    assert(list.size() == 7);
+    assert(unit->prev()->val() == 8);
+    assert(unit->next()->val() == 5);
+    
+    list.clear();
+    for (int i = 1; i < 11; i++) {
+        list.push_front(i);
+    }
+    
+    list.insert(list.first(), 11);
+    assert(list.first()->next()->val() == 10);
+    assert(list.first()->val() == 11);
+    assert(list.size() == 11);
+    
+    list.insert(list.last(), 12);
+    assert(list.last()->prev()->val() == 12);
+    assert(list.last()->prev()->prev()->val() == 2);
     
 
-        return utest_p->result();
-    }
-};
-*/
-#include <stdio.h>
-#include "iface.h"
-typedef Task::DList<int> list;
-typedef list::Unit unit;
-int main(){
-    list mylist;
-    mylist.push_front(5);
-    mylist.push_front(10);
-    mylist.push_back(13);
-    mylist.push_front(15);
-    mylist.intDump();
-    unit* elem = mylist.first();
-    mylist.insert(elem->next()->next(), 77);
-    mylist.intDump();
+    
+    
+    printf("all tests completed\n");
+//    getchar();
     return 0;
+    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -8,8 +8,8 @@ namespace Task {
     
     template <class T>  DList<T>::Unit::Unit():
         value(new T),
-        nextElem(0),
-        prevElem(0)
+        next_elem(0),
+        prev_elem(0)
     {}
     
     template <class T>  DList<T>::Unit::~Unit() {
@@ -18,12 +18,12 @@ namespace Task {
 
     template <class T> typename DList<T>::Unit*
     DList<T>::Unit::next() {
-        return nextElem;
+        return next_elem;
     }
 
     template <class T> typename DList<T>::Unit*
     DList<T>::Unit::prev() {
-        return prevElem;
+        return prev_elem;
     }
     
     template <class T> T&
@@ -37,178 +37,163 @@ namespace Task {
 // ---- DList template class implementation ----
     
     template <class T>  DList<T>::DList():
-        firstElem(0),
-        lastElem(0),
-        sizeValue(0)
+        first_elem(0),
+        last_elem(0),
+        size_value(0),
+        mode(0)
     {}
     
     template <class T>  DList<T>::~DList()
     {}
 
     template <class T> void DList<T>::push_front (const T& val) {
-        if(sizeValue == 0){
-            firstElem = new Unit;
-            *(firstElem->value) = val;
-            lastElem = firstElem;
-            sizeValue++;
+        if(size_value == 0){
+            first_elem = new Unit;
+            *(first_elem->value) = val;
+            last_elem = first_elem;
+            size_value++;
             return;
         }
-        firstElem->prevElem = new Unit;
-        firstElem->prevElem->nextElem = firstElem;
-        firstElem = firstElem->prevElem;
-        *(firstElem->value) = val;
-        sizeValue++;
+        first_elem->prev_elem = new Unit;
+        first_elem->prev_elem->next_elem = first_elem;
+        first_elem = first_elem->prev_elem;
+        *(first_elem->value) = val;
+        size_value++;
     }
 
     template <class T> void DList<T>::pop_front() {
-        switch (sizeValue) {
+        switch (size_value) {
             case 0:
+                if(mode)
+                    throw DList_error(1);
                 return;
             case 1:
-                delete firstElem;
-                firstElem = 0;
-                lastElem = 0;
-                sizeValue = 0;
+                delete first_elem;
+                first_elem = 0;
+                last_elem = 0;
+                size_value = 0;
                 return;
             default:
-                firstElem = firstElem->nextElem;
-                delete firstElem->prevElem;
-                firstElem->prevElem = 0;
-                sizeValue--;
+                first_elem = first_elem->next_elem;
+                delete first_elem->prev_elem;
+                first_elem->prev_elem = 0;
+                size_value--;
         }
     }
     
     template <class T> void DList<T>::push_back(const T& val) {
-        if(sizeValue == 0){
-            firstElem = new Unit;
-            *(firstElem->value) = val;
-            lastElem = firstElem;
-            sizeValue++;
+        if(size_value == 0){
+            first_elem = new Unit;
+            *(first_elem->value) = val;
+            last_elem = first_elem;
+            size_value++;
             return;
         }
-        lastElem->nextElem = new Unit;
-        lastElem->nextElem->prevElem = lastElem;
-        lastElem = lastElem->nextElem;
-        *(lastElem->value) = val;
-        sizeValue++;
+        last_elem->next_elem = new Unit;
+        last_elem->next_elem->prev_elem = last_elem;
+        last_elem = last_elem->next_elem;
+        *(last_elem->value) = val;
+        size_value++;
     }
     
     template <class T> void DList<T>::pop_back() {
-        switch (sizeValue) {
+        switch (size_value) {
             case 0:
+                if(mode)
+                    throw DList_error(2);
                 return;
             case 1:
-                delete firstElem;
-                firstElem = 0;
-                lastElem = 0;
-                sizeValue = 0;
+                delete first_elem;
+                first_elem = 0;
+                last_elem = 0;
+                size_value = 0;
                 return;
             default:
-                lastElem = lastElem->prevElem;
-                delete lastElem->nextElem;
-                lastElem->nextElem = 0;
-                sizeValue--;
+                last_elem = last_elem->prev_elem;
+                delete last_elem->next_elem;
+                last_elem->next_elem = 0;
+                size_value--;
         }
     }
     
     template <class T> typename DList<T>::Unit*
     DList<T>::insert(DList<T>::Unit* u, const T& val){
-        Unit* newElem = new Unit;
-        newElem->nextElem = u;
-        newElem->prevElem = u->prevElem;
-        u->prevElem = newElem;
-        *(newElem->value) = val;
-        sizeValue++;
-        if(newElem->prevElem != 0)
-            newElem->prevElem->nextElem = newElem;
-        return newElem;
+        Unit* new_elem = new Unit;
+        new_elem->next_elem = u;
+        new_elem->prev_elem = u->prev_elem;
+        if(new_elem->prev_elem == 0)
+            first_elem = new_elem;
+        u->prev_elem = new_elem;
+        *(new_elem->value) = val;
+        size_value++;
+        if(new_elem->prev_elem != 0)
+            new_elem->prev_elem->next_elem = new_elem;
+        return new_elem;
     }
     
     template <class T> typename DList<T>::Unit*
     DList<T>::first() const {
-        return firstElem;
+        return first_elem;
     }
     
     template <class T> typename DList<T>::Unit*
     DList<T>::last() const {
-        return lastElem;
+        return last_elem;
     }
     
     template <class T> typename DList<T>::Unit*
     DList<T>::erase(DList<T>::Unit* u) {
-        if(u->prevElem == 0){
+        if(u->prev_elem == 0){
             pop_front();
-            return firstElem;
+            return first_elem;
         }
-        if(u->nextElem == 0){
+        if(u->next_elem == 0){
             pop_back();
             return 0;
         }
         
-        DList<T>::Unit* ret = u->nextElem;
-        u->prevElem->nextElem = u->nextElem;
-        u->nextElem->prevElem = u->prevElem;
+        DList<T>::Unit* ret = u->next_elem;
+        u->prev_elem->next_elem = u->next_elem;
+        u->next_elem->prev_elem = u->prev_elem;
         delete u;
-        sizeValue--;
+        size_value--;
         return ret;
     }
 
     template <class T> void DList<T>::clear() {
-        int n = sizeValue;
+        int n = size_value;
         for (int i = 0; i < n; i++) {
             pop_front();
         }
     }
     
     template <class T> bool DList<T>::empty() {
-        return sizeValue == 0 ? true : false;
+        return size_value == 0 ? true : false;
     }
     
     template <class T> unsigned DList<T>::size() const {
-        return sizeValue;
+        return size_value;
     }
     
     template <class T> void DList<T>::reverse() {
-        Unit* currentSwap = firstElem;
-        Unit* buf = firstElem;
-        firstElem = lastElem;
-        lastElem = buf;
-        for (int i = 0; i < sizeValue; i++) {
-            buf = currentSwap->nextElem;
-            currentSwap->nextElem = currentSwap->prevElem;
-            currentSwap->prevElem = buf;
-            currentSwap = currentSwap->prevElem;
+        Unit* currentSwap = first_elem;
+        Unit* buf = first_elem;
+        first_elem = last_elem;
+        last_elem = buf;
+        for (int i = 0; i < size_value; i++) {
+            buf = currentSwap->next_elem;
+            currentSwap->next_elem = currentSwap->prev_elem;
+            currentSwap->prev_elem = buf;
+            currentSwap = currentSwap->prev_elem;
         }
     }
     
-    template <class T> void DList<T>::intDump() const {
-        if(sizeValue == 0){
-            printf("DList with 0 elements\n");
-            if((firstElem == 0) && (lastElem == 0))
-                printf("both pointers are null\n");
-            else
-                printf("error in pointers\n");
-            return;
-        }
-        
-        printf("DList with %d elements:\n",sizeValue);
-        printf("first to last:\n");
-        Unit* elemToPrint = firstElem;
-        
-        for (int i = 1; i < sizeValue; i++) {
-            printf("%d -> ", *(elemToPrint->value));
-            elemToPrint = elemToPrint->nextElem;
-        }
-        printf("%d\n",*(elemToPrint->value));
-        
-        printf("last to first:\n");
-        elemToPrint = lastElem;
-        for (int i = 1; i < sizeValue; i++) {
-            printf("%d -> ", *(elemToPrint->value));
-            elemToPrint = elemToPrint->prevElem;
-        }
-        printf("%d\n",*(elemToPrint->value));
-        printf("dump end.\n");
+    template< class T> void DList<T>::set_throw_mode(bool mode_){
+        mode = mode_;
+    }
+    
+    template< class T> bool DList<T>::get_throw_mode(){
+        return mode;
     }
     
 // ---- End of DList template class implementation ----

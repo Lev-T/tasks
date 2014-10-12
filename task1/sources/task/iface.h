@@ -26,10 +26,6 @@ using namespace Utils;
  */
 
 namespace Task {
-#include <stdio.h>
-}
-
-namespace Task {
     //
     // Doubly connected list
     //
@@ -45,7 +41,7 @@ namespace Task {
             
         public:
             // ---- This interface is part of the task ---
-            Unit(); // makes nextElem and prevElem zero and calls default
+            Unit(); // makes next_elem and prev_elem zero and calls default
                     // constructor for T
             ~Unit();
             Unit* next(); // Get the next unit in list
@@ -55,8 +51,21 @@ namespace Task {
         private:
             // ---- Data involved in the implementation ----
             T* value;
-            Unit* nextElem;
-            Unit* prevElem;
+            Unit* next_elem;
+            Unit* prev_elem;
+        };
+        
+        //
+        // Class for thowing exceptions
+        //
+        class DList_error {
+        private:
+            unsigned error;
+            DList_error();
+        public:
+            DList_error(unsigned error_number):
+                error(error_number)
+            {};
         };
 
         // ---- Public interface of DList ----
@@ -77,15 +86,14 @@ namespace Task {
         bool empty();          // Check if list is empty. Returns true if empty, false otherwise
         unsigned size() const; // Get the number of units in the list
         void reverse();        // Reverse the order of units in the list
-        
-        // ---- function for debug ----
-        void intDump() const; // prints list to stdout as T is int (printf("%d",val) is used)
-        
+        void set_throw_mode(bool mode); //control thowing exceptions for poping from empty list
+        bool get_throw_mode();
 private:
         // ---- The data involved in the implementation ----
-        Unit* firstElem;
-        Unit* lastElem;
-        unsigned sizeValue;
+        Unit* first_elem;
+        Unit* last_elem;
+        unsigned size_value;
+        bool mode;
     };
 
  //   bool uTest( UnitTest *utest_p);
