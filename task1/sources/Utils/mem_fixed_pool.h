@@ -228,7 +228,8 @@ namespace Mem
         {
             first_chunk = chunk->next( MemImpl::CHUNK_LIST_ALL);
         }
-        chunk->MemImpl::Chunk< size>::~Chunk();
+//        chunk->MemImpl::Chunk< size>::~Chunk();
+        chunk->~Chunk();
 #ifdef MEM_USE_MALLOC 
         free( chunk);
 #else
