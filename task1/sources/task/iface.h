@@ -5,7 +5,7 @@
  * by Lev Teplyakov
  * for iLab Compiler Project
  */
-/*==========
+///*==========
 #include "../Utils/utils_iface.h"
 
 // namespaces import 
@@ -20,7 +20,7 @@ using namespace Utils;
 #if !defined(DLIST_ASSERTD)
 #    define DLIST_ASSERTD(cond) ASSERT_XD(cond, "DList", "")
 #endif
-==========*/
+//==========*/
 /**
  * Namespace for the programming task
  */
@@ -96,7 +96,7 @@ private:
         bool mode;
     };
 
- //   bool uTest( UnitTest *utest_p);
+    bool uTest( UnitTest *utest_p);
 };
 
 // Since we have defined list as a template - we should implement the solution in a header
